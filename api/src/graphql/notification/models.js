@@ -1,6 +1,7 @@
 import path from 'path'
+import { UserInputError, ApolloError } from 'apollo-server'
 import { readJsonFile, writeJsonFile } from '../../utils/fs'
-import { modelResponse } from '../../utils/response'
+import { modelResponse, generateNewId } from '../../utils/model'
 
 const PATH_FILE = path.join(__dirname, 'data.json')
 const readDataFile = () => readJsonFile(PATH_FILE)
@@ -28,7 +29,7 @@ export async function read({ employeeId, notificationId }) {
     // if notificationId is defined, return specific notification
     if (notificationId) {
       const notification = currentData[notificationId]
-      return modelResponse.success({ data: notification.isActive ? notification : null })
+      return modelResponse.success({ data: notification.isActive ? notification : {} })
     }
 
     // if employeeId is not defined, return array of notifications
@@ -48,15 +49,15 @@ export async function read({ employeeId, notificationId }) {
  */
 export async function create({ title, description, type }) {
   try {
-    if (!type || !title || !description) throw new Error('INVALID_INPUT_NOTIFICATION')
+    if (!type || !title || !description) throw new UserInputError('INVALID_INPUT_NOTIFICATION')
 
     const currentData = await readDataFile()
-    const newId = Object.keys(currentData).length + 1
+    const newId = generateNewId(currentData, 'NOTIFICATION')
     const time = new Date().toISOString()
 
     // prepare new notification data
     const newData = {
-      id: `NOTIFICATION${String(newId).padStart(10, '0')}`,
+      id: newId,
       isActive: true,
       title: encodeURIComponent(title),
       description: encodeURIComponent(title),
@@ -67,7 +68,7 @@ export async function create({ title, description, type }) {
 
     // store in database
     const isWritten = await writeDataFile({ ...currentData, [newId]: newData })
-    if (!isWritten) throw new Error('CANNOT_CREATE_NEW_NOTIFICATION')
+    if (!isWritten) throw new ApolloError('CANNOT_CREATE_NEW_NOTIFICATION')
 
     return modelResponse.success({ data: newData })
   } catch (error) {
@@ -84,13 +85,13 @@ export async function create({ title, description, type }) {
  */
 export async function update(id, { isActive }) {
   try {
-    if (isActive === undefined) throw new Error('INVALID_INPUT_NOTIFICATION')
+    if (isActive === undefined) throw new UserInputError('INVALID_INPUT_NOTIFICATION')
 
     const currentData = await readDataFile()
     const currentNotificationData = currentData[id]
 
     // validate all notification data
-    if (!currentNotificationData) throw new Error('CANNOT_FETCH_NOTIFICATION')
+    if (!currentNotificationData) throw new ApolloError('CANNOT_FETCH_NOTIFICATION')
 
     // prepare updated notification data
     const newData = {
@@ -101,7 +102,7 @@ export async function update(id, { isActive }) {
 
     // store in database
     const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new Error('CANNOT_UPDATE_NOTIFICATION')
+    if (!isWritten) throw new ApolloError('CANNOT_UPDATE_NOTIFICATION')
 
     return modelResponse.success({ data: newData })
   } catch (error) {

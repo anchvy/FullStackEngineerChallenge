@@ -8,15 +8,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
-    "ignore": ["data.json"]
+    "ignore": [
+      "data.json"
+    ]
   },
   "keywords": [],
   "author": "anchvy <anchvys@gmail.com> (https://github.com/anchvy)",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.9.7",
+    "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "graphql-iso-date": "^3.6.1",
+    "jsonwebtoken": "^8.5.1",
     "merge-graphql-schemas": "^1.7.0"
   },
   "devDependencies": {

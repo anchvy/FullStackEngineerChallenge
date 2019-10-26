@@ -1,0 +1,17 @@
+type Auth {
+  "Token"
+  token: String
+
+  "Flag to define whether the token can be used or not"
+  isActive: Boolean
+}
+
+# ----------------------------------------------------
+
+type Mutation {
+  "Generate new token"
+  auth(employeeId: String!): Auth
+
+  "Verify given token"
+  verifyToken(token: String!): Auth
+}

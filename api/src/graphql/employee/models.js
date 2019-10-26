@@ -1,6 +1,7 @@
 import path from 'path'
+import { UserInputError, ApolloError } from 'apollo-server'
 import { readJsonFile, writeJsonFile } from '../../utils/fs'
-import { modelResponse } from '../../utils/response'
+import { modelResponse, generateNewId } from '../../utils/model'
 
 const PATH_FILE = path.join(__dirname, 'data.json')
 const readDataFile = () => readJsonFile(PATH_FILE)
@@ -23,7 +24,7 @@ export async function read(id) {
 
     // if id is defined, return specific employee
     const employee = currentData[id]
-    return modelResponse.success({ data: employee.isActive ? employee : null })
+    return modelResponse.success({ data: employee && employee.isActive ? employee : {} })
   } catch (error) {
     return modelResponse.fail({ message: error.message, data: id ? {} : [] })
   }
@@ -38,15 +39,15 @@ export async function read(id) {
  */
 export async function create({ name, role }) {
   try {
-    if (!name || !role) throw new Error('INVALID_INPUT_EMPLOYEE')
+    if (!name || !role) throw new UserInputError('INVALID_INPUT_EMPLOYEE')
 
     const currentData = await readDataFile()
-    const newId = Object.keys(currentData).length + 1
+    const newId = generateNewId(currentData, 'PAY')
     const time = new Date().toISOString()
 
     // prepare new employee data
     const newData = {
-      id: `PAY${String(newId).padStart(10, '0')}`,
+      id: newId,
       isActive: true,
       name: encodeURIComponent(name),
       role,
@@ -56,7 +57,7 @@ export async function create({ name, role }) {
 
     // store in database
     const isWritten = await writeDataFile({ ...currentData, [newId]: newData })
-    if (!isWritten) throw new Error('CANNOT_CREATE_NEW_EMPLOYEE')
+    if (!isWritten) throw new ApolloError('CANNOT_CREATE_NEW_EMPLOYEE')
 
     return modelResponse.success({ data: newData })
   } catch (error) {
@@ -74,13 +75,13 @@ export async function create({ name, role }) {
  */
 export async function update(id, { name, role }) {
   try {
-    if (!id || !name || !role) throw new Error('INVALID_INPUT_EMPLOYEE')
+    if (!id || !name || !role) throw new UserInputError('INVALID_INPUT_EMPLOYEE')
 
     const currentData = await readDataFile()
     const currentEmployeeData = currentData[id]
 
     // validate all employee data
-    if (!currentEmployeeData) throw new Error('CANNOT_FETCH_EMPLOYEE')
+    if (!currentEmployeeData) throw new ApolloError('CANNOT_FETCH_EMPLOYEE')
 
     // prepare updated employee data
     const newData = {
@@ -92,7 +93,7 @@ export async function update(id, { name, role }) {
 
     // store in database
     const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new Error('CANNOT_UPDATE_EMPLOYEE')
+    if (!isWritten) throw new ApolloError('CANNOT_UPDATE_EMPLOYEE')
 
     return modelResponse.success({ data: newData })
   } catch (error) {
@@ -107,13 +108,13 @@ export async function update(id, { name, role }) {
  */
 export async function remove(id) {
   try {
-    if (!id) throw new Error('INVALID_EMPLOYEE_ID')
+    if (!id) throw new ApolloError('INVALID_EMPLOYEE_ID')
 
     const currentData = await readDataFile()
     const currentEmployeeData = currentData[id]
 
     // validate target employee data
-    if (!currentEmployeeData) throw new Error('CANNOT_FETCH_EMPLOYEE')
+    if (!currentEmployeeData) throw new ApolloError('CANNOT_FETCH_EMPLOYEE')
 
     // prepare removed employee data
     const newData = {
@@ -124,7 +125,7 @@ export async function remove(id) {
 
     // store in database
     const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new Error('CANNOT_REMOVE_EMPLOYEE')
+    if (!isWritten) throw new ApolloError('CANNOT_REMOVE_EMPLOYEE')
 
     return modelResponse.success({ data: newData })
   } catch (error) {
