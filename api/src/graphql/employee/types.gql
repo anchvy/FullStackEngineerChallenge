@@ -1,0 +1,62 @@
+enum EMPLOYEE_ROLE {
+  ADMIN
+  STAFF
+}
+
+type Employee {
+  "Employee unique id"
+  id: String!
+
+  "Employee fullname"
+  name: String!
+
+  "Employee role"
+  role: EMPLOYEE_ROLE!
+
+  "Flag to define whether the employee is removed or not"
+  isActive: Boolean!
+
+  "Employee review score"
+  reviewScore: Float
+
+  "Array of employee's reviews"
+  reviews: [Review]
+
+  "Array of employee's notification"
+  notifications: [Notification]
+
+  "Employee created date and time"
+  createdAt: DateTime!
+
+  "Employee updated date and time"
+  updatedAt: DateTime
+}
+
+input InputEmployee {
+  "Employee fullname"
+  name: String!
+
+  "Employee role"
+  role: EMPLOYEE_ROLE!
+}
+
+# ----------------------------------------------------
+
+type Query {
+  "Get specific employee data with given employee id"
+  employee(id: String!): Employee
+
+  "Get employees"
+  employees: [Employee]
+}
+
+type Mutation {
+  "Create a new employee"
+  createEmployee(data: InputEmployee!): Employee
+
+  "Update specific employee data"
+  updateEmployee(id: String!, data: InputEmployee!): Employee
+
+  "Remove specific employee with given id"
+  removeEmployee(id: String!): Employee
+}

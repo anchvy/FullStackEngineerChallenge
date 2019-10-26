@@ -2,17 +2,22 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "nodemonConfig": {
+    "ignore": ["data.json"]
   },
   "keywords": [],
   "author": "anchvy <anchvys@gmail.com> (https://github.com/anchvy)",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.9.7",
-    "graphql": "^14.5.8"
+    "graphql": "^14.5.8",
+    "graphql-iso-date": "^3.6.1",
+    "merge-graphql-schemas": "^1.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
@@ -20,6 +25,11 @@
     "@babel/preset-env": "^7.6.3",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
-    "nodemon": "^1.19.4"
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "nodemon": "^1.19.4",
+    "prettier": "^1.18.2"
   }
 }

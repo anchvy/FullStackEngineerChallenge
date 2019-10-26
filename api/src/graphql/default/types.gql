@@ -1,0 +1,11 @@
+scalar Date
+scalar Time
+scalar DateTime
+
+type AcknowledgeResponse {
+  "Response status"
+  acknowledge: Boolean!
+
+  "Response message"
+  message: String
+}

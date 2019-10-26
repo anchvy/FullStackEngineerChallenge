@@ -1,0 +1,57 @@
+type Review {
+  "Review ID"
+  id: String!
+
+  "Review score"
+  score: Float
+
+  "Review text"
+  text: String
+
+  "Flag to define whether the review is removed or not"
+  isActive: Boolean!
+
+  "Employee who has reviewed/requested to review"
+  reviewer: Employee!
+
+  "Employee who is being reviewed"
+  reviewee: Employee!
+
+  "Review created date and time"
+  createdAt: DateTime!
+
+  "Review updated date and time"
+  updatedAt: DateTime!
+}
+
+input InputReview {
+  "Review score"
+  score: Float
+
+  "Review text"
+  text: String
+
+  "Employee id which is being reviewed"
+  revieweeId: String!
+}
+
+# ----------------------------------------------------
+
+type Query {
+  "Get specific review data"
+  review(id: String!): Review
+
+  "Get all reviews or specific employee's reviews"
+  reviews(employeeId: String): [Review]
+}
+
+type Mutation { 
+  "Create a new employee review"
+  createReview(data: InputReview!): Review
+
+  "Update specific employee review"
+  updateReview(id: String!, data: InputReview!): Review
+
+  "Remove specific review with given id"
+  removeReview(id: String!): AcknowledgeResponse
+}
