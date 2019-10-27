@@ -1,0 +1,7 @@
+const COLORS = {
+  LIGHT_BLUE: '#C4C1E7',
+  BLUE: '#3F51B5',
+  DARK_BLUE: '#2842A3',
+}
+
+export default COLORS
