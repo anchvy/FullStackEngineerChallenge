@@ -35,7 +35,7 @@ export async function generate(employeeId) {
 export function verify(token) {
   try {
     if (!token) throw new UserInputError('INVALID_TOKEN')
-
+    // if the verification is failed, it will throw an error
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
     return modelResponse.success({ data: { token, isActive: true, payload: decoded } })
   } catch (error) {
