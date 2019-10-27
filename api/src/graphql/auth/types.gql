@@ -4,14 +4,22 @@ type Auth {
 
   "Flag to define whether the token can be used or not"
   isActive: Boolean
+
+  "Token's owner name"
+  username: String
+
+  "Notice message"
+  message: String
 }
 
 # ----------------------------------------------------
 
+type Query {
+  "Verify given token"
+  verifyToken(token: String!): Auth
+}
+
 type Mutation {
   "Generate new token"
   auth(employeeId: String!): Auth
-
-  "Verify given token"
-  verifyToken(token: String!): Auth
 }

@@ -3,17 +3,19 @@ import { ApolloServer, AuthenticationError } from 'apollo-server'
 import { verify } from './graphql/auth/models'
 import schema from './graphql/schema'
 
+const AUTH_OPERATIONS_NAME = ['Auth', 'VerifyToken']
 const PORT = 4000
 const server = new ApolloServer({
   schema,
   context: ({ req }) => {
-    const { operationName } = req.body
     let user = {}
+    const requestOperations = Array.isArray(req.body) ? req.body : [req.body]
+    const isAuthRequest = requestOperations.every(operation => AUTH_OPERATIONS_NAME.includes(operation.operationName))
 
     // prevent validate user in case of auth request
-    if (operationName !== 'Auth') {
-      const { authentication = '' } = req.headers
-      const { status, responseData } = verify(authentication.split(' ')[1])
+    if (!isAuthRequest) {
+      const { authorization = '' } = req.headers
+      const { status, responseData } = verify(authorization.split(' ')[1])
       // validate user login
       if (!status) throw new AuthenticationError('REQUIRED_LOGIN')
       // set current user to context

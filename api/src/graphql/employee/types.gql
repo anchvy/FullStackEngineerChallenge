@@ -44,7 +44,7 @@ input InputEmployee {
 
 type Query {
   "Get specific employee data with given employee id"
-  employee(id: String!): Employee
+  employee(id: String): Employee
 
   "Get employees"
   employees: [Employee]

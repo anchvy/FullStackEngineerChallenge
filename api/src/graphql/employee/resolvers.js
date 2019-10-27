@@ -4,8 +4,8 @@ import { read as readNotification } from '../notification/models'
 
 const resolvers = {
   Query: {
-    employee: async (_, { id }) => {
-      const { responseData } = await read(id)
+    employee: async (_, { id }, { user }) => {
+      const { responseData } = await read(user.id || id)
       return responseData.data
     },
     employees: async () => {

@@ -20,10 +20,12 @@ export async function generate(employeeId) {
     if (!data.id) throw new ApolloError('INVALID_EMPLOYEE')
 
     // if employee exists, then generate a token
-    const token = jwt.sign({ id: data.id, role: data.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
+    const token = jwt.sign({ id: data.id, name: data.name, role: data.role }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '1d',
+    })
     return modelResponse.success({ data: { token, isActive: true } })
   } catch (error) {
-    return modelResponse.fail({ message: error.message, data: {} })
+    return modelResponse.fail({ data: { message: error.message } })
   }
 }
 
@@ -39,6 +41,6 @@ export function verify(token) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
     return modelResponse.success({ data: { token, isActive: true, payload: decoded } })
   } catch (error) {
-    return modelResponse.fail({ message: error.message, data: { token, isActive: false } })
+    return modelResponse.fail({ data: { token, isActive: false, message: error.message } })
   }
 }
