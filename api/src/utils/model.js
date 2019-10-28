@@ -1,10 +1,10 @@
 /**
  * Generate new document id
- * @param {Object<*>} currentData
+ * @param {number} currentCount
  * @param {string} prefix
  */
-export function generateNewId(currentData, prefix) {
-  return `${prefix.toUpperCase()}${String(Object.keys(currentData).length + 1).padStart(10, '0')}`
+export function generateNewId(currentCount, prefix) {
+  return `${prefix.toUpperCase()}${String(currentCount + 1).padStart(10, '0')}`
 }
 
 /**

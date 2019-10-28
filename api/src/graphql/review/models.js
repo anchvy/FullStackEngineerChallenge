@@ -1,11 +1,7 @@
-import path from 'path'
-import { UserInputError, ApolloError } from 'apollo-server'
-import { readJsonFile, writeJsonFile } from '../../utils/fs'
-import { modelResponse, generateNewId } from '../../utils/model'
+import { UserInputError } from 'apollo-server'
 
-const PATH_FILE = path.join(__dirname, 'data.json')
-const readDataFile = () => readJsonFile(PATH_FILE)
-const writeDataFile = data => writeJsonFile(PATH_FILE, data)
+import Reviews from '../../db/reviews'
+import { modelResponse, generateNewId } from '../../utils/model'
 
 /**
  * Get review data with/without given options
@@ -16,26 +12,25 @@ const writeDataFile = data => writeJsonFile(PATH_FILE, data)
  */
 export async function read({ employeeId, reviewId }) {
   try {
-    const currentData = await readDataFile()
-    const filteredData = currentData.filter(item => item.isActive)
-    const filteredDataArr = Object.values(filteredData)
+    const defaultQuery = { isActive: true }
 
     // if employeeId is defined, return reviews of employee
     if (employeeId) {
-      const employeeReviews = filteredDataArr.filter(review => review.revieweeId === employeeId)
+      const employeeReviews = await Reviews.find({ revieweeId: employeeId, ...defaultQuery })
       return modelResponse.success({ data: employeeReviews })
     }
 
     // if reviewId is defined, return specific review
     if (reviewId) {
-      const review = currentData[reviewId]
-      return modelResponse.success({ data: review.isActive ? review : {} })
+      const review = await Reviews.findOne({ id: reviewId, ...defaultQuery })
+      return modelResponse.success({ data: review })
     }
 
     // if employeeId is not defined, return array of reviews
-    return modelResponse.success({ data: filteredDataArr })
+    const reviews = await Reviews.find(defaultQuery)
+    return modelResponse.success({ data: reviews })
   } catch (error) {
-    return modelResponse.fail({ message: error.message, data: [] })
+    return modelResponse.fail({ message: error.message, data: reviewId ? {} : [] })
   }
 }
 
@@ -52,8 +47,8 @@ export async function create({ score, text, revieweeId, reviewerId }) {
   try {
     if (!revieweeId || !reviewerId) throw new UserInputError('INVALID_INPUT_REVIEW')
 
-    const currentData = await readDataFile()
-    const newId = generateNewId(currentData, 'REVIEW')
+    const count = await Reviews.countDocuments()
+    const newId = generateNewId(count, 'REVIEW')
     const time = new Date().toISOString()
 
     // prepare new review data
@@ -69,10 +64,8 @@ export async function create({ score, text, revieweeId, reviewerId }) {
     }
 
     // store in database
-    const isWritten = await writeDataFile({ ...currentData, [newId]: newData })
-    if (!isWritten) throw new ApolloError('CANNOT_CREATE_NEW_REVIEW')
-
-    return modelResponse.success({ data: newData })
+    const response = await Reviews.findOneAndUpdate({ id: newId }, newData, { upsert: true, new: true })
+    return modelResponse.success({ data: response })
   } catch (error) {
     return modelResponse.fail({ message: error.message })
   }
@@ -90,25 +83,16 @@ export async function update(id, { score, text }) {
   try {
     if (!id || !score) throw new UserInputError('INVALID_INPUT_REVIEW')
 
-    const currentData = await readDataFile()
-    const currentReviewData = currentData[id]
-
-    // validate all review data
-    if (!currentReviewData) throw new ApolloError('CANNOT_FETCH_REVIEW')
-
     // prepare updated review data
-    const newData = {
-      ...currentReviewData,
+    const updatedData = {
       score,
       text,
       updatedAt: new Date().getTime(),
     }
 
     // store in database
-    const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new ApolloError('CANNOT_UPDATE_REVIEW')
-
-    return modelResponse.success({ data: newData })
+    const response = await Reviews.findOneAndUpdate({ id }, updatedData, { new: true })
+    return modelResponse.success({ data: response })
   } catch (error) {
     return modelResponse.fail({ message: error.message })
   }
@@ -123,24 +107,15 @@ export async function remove(id) {
   try {
     if (!id) throw new UserInputError('INVALID_REVIEW_ID')
 
-    const currentData = await readDataFile()
-    const currentReviewData = currentData[id]
-
-    // validate target review data
-    if (!currentReviewData) throw new ApolloError('CANNOT_FETCH_REVIEW')
-
-    // prepare removed review data
-    const newData = {
-      ...currentReviewData,
+    // prepare removed employee data
+    const updatedData = {
       isActive: false,
       updatedAt: new Date().getTime(),
     }
 
     // store in database
-    const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new ApolloError('CANNOT_REMOVE_REVIEW')
-
-    return modelResponse.success({ data: newData })
+    const response = await Reviews.findOneAndUpdate({ id }, updatedData, { new: true })
+    return modelResponse.success({ data: response })
   } catch (error) {
     return modelResponse.fail({ message: error.message })
   }

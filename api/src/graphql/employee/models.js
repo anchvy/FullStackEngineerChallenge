@@ -1,11 +1,7 @@
-import path from 'path'
 import { UserInputError, ApolloError } from 'apollo-server'
-import { readJsonFile, writeJsonFile } from '../../utils/fs'
-import { modelResponse, generateNewId } from '../../utils/model'
 
-const PATH_FILE = path.join(__dirname, 'data.json')
-const readDataFile = () => readJsonFile(PATH_FILE)
-const writeDataFile = data => writeJsonFile(PATH_FILE, data)
+import Employees from '../../db/employees'
+import { modelResponse, generateNewId } from '../../utils/model'
 
 /**
  * Get employee data with/without given id
@@ -14,17 +10,17 @@ const writeDataFile = data => writeJsonFile(PATH_FILE, data)
  */
 export async function read(id) {
   try {
-    const currentData = await readDataFile()
+    const defaultQuery = { isActive: true }
 
     // if id is not defined, return array of employees
     if (!id) {
-      const filteredData = Object.values(currentData).filter(item => item.isActive)
-      return modelResponse.success({ data: Object.values(filteredData) })
+      const allEmployee = await Employees.find(defaultQuery)
+      return modelResponse.success({ data: allEmployee })
     }
 
     // if id is defined, return specific employee
-    const employee = currentData[id]
-    return modelResponse.success({ data: employee && employee.isActive ? employee : {} })
+    const employee = await Employees.findOne({ id, ...defaultQuery })
+    return modelResponse.success({ data: employee })
   } catch (error) {
     return modelResponse.fail({ message: error.message, data: id ? {} : [] })
   }
@@ -41,8 +37,8 @@ export async function create({ name, role }) {
   try {
     if (!name || !role) throw new UserInputError('INVALID_INPUT_EMPLOYEE')
 
-    const currentData = await readDataFile()
-    const newId = generateNewId(currentData, 'PAY')
+    const count = await Employees.countDocuments()
+    const newId = generateNewId(count, 'PAY')
     const time = new Date().toISOString()
 
     // prepare new employee data
@@ -56,10 +52,8 @@ export async function create({ name, role }) {
     }
 
     // store in database
-    const isWritten = await writeDataFile({ ...currentData, [newId]: newData })
-    if (!isWritten) throw new ApolloError('CANNOT_CREATE_NEW_EMPLOYEE')
-
-    return modelResponse.success({ data: newData })
+    const response = await Employees.findOneAndUpdate({ id: newId }, newData, { upsert: true, new: true })
+    return modelResponse.success({ data: response })
   } catch (error) {
     return modelResponse.fail({ message: error.message })
   }
@@ -77,25 +71,16 @@ export async function update(id, { name, role }) {
   try {
     if (!id || !name || !role) throw new UserInputError('INVALID_INPUT_EMPLOYEE')
 
-    const currentData = await readDataFile()
-    const currentEmployeeData = currentData[id]
-
-    // validate all employee data
-    if (!currentEmployeeData) throw new ApolloError('CANNOT_FETCH_EMPLOYEE')
-
     // prepare updated employee data
-    const newData = {
-      ...currentEmployeeData,
+    const updatedData = {
       name,
       role,
       updatedAt: new Date().getTime(),
     }
 
     // store in database
-    const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new ApolloError('CANNOT_UPDATE_EMPLOYEE')
-
-    return modelResponse.success({ data: newData })
+    const response = await Employees.findOneAndUpdate({ id }, updatedData, { new: true })
+    return modelResponse.success({ data: response })
   } catch (error) {
     return modelResponse.fail({ message: error.message })
   }
@@ -110,24 +95,15 @@ export async function remove(id) {
   try {
     if (!id) throw new ApolloError('INVALID_EMPLOYEE_ID')
 
-    const currentData = await readDataFile()
-    const currentEmployeeData = currentData[id]
-
-    // validate target employee data
-    if (!currentEmployeeData) throw new ApolloError('CANNOT_FETCH_EMPLOYEE')
-
     // prepare removed employee data
-    const newData = {
-      ...currentEmployeeData,
+    const updatedData = {
       isActive: false,
       updatedAt: new Date().getTime(),
     }
 
     // store in database
-    const isWritten = await writeDataFile({ ...currentData, [id]: newData })
-    if (!isWritten) throw new ApolloError('CANNOT_REMOVE_EMPLOYEE')
-
-    return modelResponse.success({ data: newData })
+    const response = await Employees.findOneAndUpdate({ id }, updatedData, { new: true })
+    return modelResponse.success({ data: response })
   } catch (error) {
     return modelResponse.fail({ message: error.message })
   }

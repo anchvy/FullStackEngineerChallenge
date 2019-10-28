@@ -1,6 +1,5 @@
 import { read, create, update, remove } from './models'
 import { read as readReview } from '../review/models'
-import { read as readNotification } from '../notification/models'
 
 const resolvers = {
   Query: {
@@ -30,10 +29,6 @@ const resolvers = {
   Employee: {
     reviews: async ({ id }) => {
       const { responseData } = await readReview({ employeeId: id })
-      return responseData.data
-    },
-    notifications: async ({ id }) => {
-      const { responseData } = await readNotification({ employeeId: id })
       return responseData.data
     },
   },
