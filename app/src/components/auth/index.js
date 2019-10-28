@@ -1,13 +1,11 @@
 import React, { Suspense, lazy } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
 
 import UIPaper from '@material-ui/core/Paper'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { SPACING, FLEX_CENTER } from '../../utils/styles'
 import COLORS from '../../utils/colors'
-import routes from '../../configs/routes'
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -52,13 +50,7 @@ const Loader = () => (
 )
 
 const Auth = React.memo(props => {
-  const history = useHistory()
-  const { isLoading, isAuth } = props
-
-  // if auth successfully, then navigate to employee page
-  if (isAuth) {
-    history.push(routes.me.path)
-  }
+  const { authErrorText, isLoading, onClickSignInButton } = props
 
   return (
     <Wrapper>
@@ -70,7 +62,7 @@ const Auth = React.memo(props => {
           <Loader />
         ) : (
           <Suspense fallback={<Loader />}>
-            <LoginForm />
+            <LoginForm onClickSignInButton={onClickSignInButton} errorText={authErrorText} />
           </Suspense>
         )}
       </Paper>
@@ -79,13 +71,15 @@ const Auth = React.memo(props => {
 })
 
 Auth.propTypes = {
-  isAuth: PropTypes.bool,
+  authErrorText: PropTypes.string,
   isLoading: PropTypes.bool,
+  onClickSignInButton: PropTypes.func,
 }
 
 Auth.defaultProps = {
-  isAuth: false,
+  authErrorText: null,
   isLoading: false,
+  onClickSignInButton: () => {},
 }
 
 export default Auth

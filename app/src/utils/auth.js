@@ -5,7 +5,6 @@ import cookies from 'js-cookie'
  * @returns {string}
  */
 export function getToken() {
-  console.log('>>> [auth.js] process.env.REACT_APP_TOKEN_KEY : ', process.env.REACT_APP_TOKEN_KEY)
   return cookies.get(process.env.REACT_APP_TOKEN_KEY) || ''
 }
 

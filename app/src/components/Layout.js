@@ -2,11 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import NavigationBar from './NavigationBar'
+import NavigationBar from '../containers/navigationBar'
 import { LAYOUT_PADDING } from '../utils/styles'
 
 // const Wrapper = styled.div``
 const Container = styled.div`
+  display: flex;
   margin: auto;
   padding: ${LAYOUT_PADDING};
   width: 100%;

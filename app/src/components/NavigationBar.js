@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 
 import AppBar from '@material-ui/core/AppBar'
-import Avatar from '@material-ui/core/Avatar'
+import UIAvatar from '@material-ui/core/Avatar'
 
 import { LAYOUT_PADDING } from '../utils/styles'
+import COLORS from '../utils/colors'
 
 const Container = styled.div`
   display: flex;
@@ -17,24 +18,36 @@ const Container = styled.div`
 const Logo = styled.img`
   width: 48px;
 `
+const Avatar = styled(UIAvatar)`
+  && {
+    text-transform: uppercase;
+    background: ${COLORS.BLUE};
+  }
+`
 
 /* -------------------------------------------- *
  * REACT COMPONENT
  * -------------------------------------------- */
 
 const NavigationBar = props => {
+  const { name } = props
+
   return (
     <AppBar position="static" color="inherit">
       <Container>
         <Logo src="/tmp/images/logo.png" alt="Logo" />
-        <Avatar>W</Avatar>
+        {name && <Avatar>{name.substr(0, 1)}</Avatar>}
       </Container>
     </AppBar>
   )
 }
 
-NavigationBar.propTypes = {}
+NavigationBar.propTypes = {
+  name: PropTypes.string,
+}
 
-NavigationBar.defaultProps = {}
+NavigationBar.defaultProps = {
+  name: null,
+}
 
 export default NavigationBar

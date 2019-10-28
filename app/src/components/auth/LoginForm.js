@@ -1,16 +1,10 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useHistory } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 import InputAdornment from '@material-ui/core/InputAdornment'
 import UITextField from '@material-ui/core/TextField'
 import UIButton from '@material-ui/core/Button'
-
-import { useMutation } from '@apollo/react-hooks'
-import { get } from 'lodash'
-import gql from 'graphql-tag'
-import routes from '../../configs/routes'
-import { setToken } from '../../utils/auth'
 import { SPACING } from '../../utils/styles'
 
 const EMPLOYEE_ID_PREFIX = process.env.REACT_APP_EMPLOYEE_ID_PREFIX
@@ -33,35 +27,18 @@ const ErrorText = styled.span`
   width: 100%;
 `
 
-const AUTH = gql`
-  mutation Auth($id: String!) {
-    auth(employeeId: $id) {
-      token
-      message
-    }
-  }
-`
-
 /* -------------------------------------------- *
  * REACT COMPONENT
  * -------------------------------------------- */
 
-const LoginForm = () => {
-  const history = useHistory()
+const LoginForm = React.memo(props => {
+  const { isLoading, errorText } = props
   const textFieldRef = useRef(null)
-  const [mutate, { loading, data }] = useMutation(AUTH)
-  const errorText = get(data, 'auth.message')
-
-  // if auth successfully, then store the current token and navigate to employee page
-  if (get(data, 'auth.token')) {
-    setToken(data.auth.token)
-    history.push(routes.me.path)
-  }
 
   // signin button: onclick
   const onClickSignInButton = () => {
     const { value } = textFieldRef.current
-    mutate({ variables: { id: EMPLOYEE_ID_PREFIX + value } })
+    props.onClickSignInButton(EMPLOYEE_ID_PREFIX + value)
   }
 
   return (
@@ -77,11 +54,23 @@ const LoginForm = () => {
         }}
       />
       {errorText && <ErrorText>{`* ${errorText}`}</ErrorText>}
-      <Button variant="contained" color="primary" onClick={onClickSignInButton} disabled={!!loading}>
-        {loading ? 'Loading...' : 'Sign In'}
+      <Button variant="contained" color="primary" onClick={onClickSignInButton} disabled={!!isLoading}>
+        {isLoading ? 'Loading...' : 'Sign In'}
       </Button>
     </>
   )
+})
+
+LoginForm.propTypes = {
+  errorText: PropTypes.string,
+  isLoading: PropTypes.bool,
+  onClickSignInButton: PropTypes.func,
+}
+
+LoginForm.defaultProps = {
+  errorText: null,
+  isLoading: false,
+  onClickSignInButton: () => {},
 }
 
 export default LoginForm

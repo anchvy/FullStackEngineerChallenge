@@ -23,7 +23,7 @@ export async function generate(employeeId) {
     const token = jwt.sign({ id: data.id, name: data.name, role: data.role }, process.env.JWT_SECRET_KEY, {
       expiresIn: '1d',
     })
-    return modelResponse.success({ data: { token, isActive: true } })
+    return modelResponse.success({ data: { token, isActive: true, payload: data } })
   } catch (error) {
     return modelResponse.fail({ data: { message: error.message } })
   }

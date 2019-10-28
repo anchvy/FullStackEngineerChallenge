@@ -19,9 +19,8 @@ const errorLink = onError(({ graphQLErrors }) => {
     const isAuthenticationError = graphQLErrors.some(err => err.extensions.code === 'UNAUTHENTICATED')
     // remove current token key and force re-login
     if (isAuthenticationError) {
-      console.log('>>> [initApollo.js] graphQLErrors : ', graphQLErrors)
       setToken('')
-      // window.location.href = routes.auth.path
+      window.location.href = routes.auth.path
     }
   }
 })
