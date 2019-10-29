@@ -3,7 +3,7 @@ import { read as readReview } from '../review/models'
 
 const resolvers = {
   Query: {
-    employee: async (_, { id }, { user }) => read(user.id || id),
+    employee: async (_, { id }, { user }) => read(user.id || id) || {},
     employees: async () => read(),
   },
   Mutation: {
@@ -12,7 +12,7 @@ const resolvers = {
     removeEmployee: async (_, { id }) => remove(id),
   },
   Employee: {
-    reviews: async ({ id }) => readReview({ employeeId: id }),
+    reviews: async ({ id }) => readReview({ reviewerId: id }),
   },
 }
 

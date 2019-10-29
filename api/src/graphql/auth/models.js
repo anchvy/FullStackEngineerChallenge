@@ -13,7 +13,7 @@ export async function generate(employeeId) {
 
     const employee = await readEmployee(employeeId)
     // validate employee data
-    if (!employee.id) throw new ApolloError('INVALID_EMPLOYEE')
+    if (!employee || !employee.id) throw new ApolloError('INVALID_EMPLOYEE')
 
     // if employee exists, then generate a token
     const token = jwt.sign({ id: employee.id, name: employee.name, role: employee.role }, process.env.JWT_SECRET_KEY, {

@@ -1,5 +1,6 @@
 import { UserInputError, ApolloError } from 'apollo-server'
 
+import { read as readEmployee } from '../employee/models'
 import Reviews from '../../db/reviews'
 import { generateNewId } from '../../utils/model'
 
@@ -8,14 +9,20 @@ const DEFAULT_QUERY = { isActive: true }
 /**
  * Get review data with/without given options
  * @param {Object} options
- * @param {string} options.employeeId - reviewee id
+ * @param {string} options.revieweeId
+ * @param {string} options.reviewerId
  * @param {string} options.reviewId
  * @returns {Object|Object[]}
  */
-export async function read({ employeeId, reviewId }) {
-  // if employeeId is defined, return reviews of employee
-  if (employeeId) {
-    return Reviews.find({ revieweeId: employeeId, ...DEFAULT_QUERY })
+export async function read({ revieweeId, reviewerId, reviewId }) {
+  // if revieweeId is defined, return reviews of employee
+  if (revieweeId) {
+    return Reviews.find({ revieweeId, ...DEFAULT_QUERY })
+  }
+
+  // if reviewerId is defined, return assinged reviews of employee
+  if (reviewerId) {
+    return Reviews.find({ reviewerId, ...DEFAULT_QUERY })
   }
 
   // if reviewId is defined, return specific review
@@ -38,6 +45,17 @@ export async function read({ employeeId, reviewId }) {
 export async function create({ text, revieweeId, reviewerId }) {
   if (!revieweeId || !reviewerId) throw new UserInputError('INVALID_INPUT_REVIEW')
   if (revieweeId === reviewerId) throw new UserInputError('SELF_REVIEWING_NOT_ALLOWED')
+
+  console.log('>>> [models.js] revieweeId : ', revieweeId)
+  console.log('>>> [models.js] reviewerId : ', reviewerId)
+
+  const reviewee = await readEmployee(revieweeId)
+  console.log('>>> [models.js] reviewee : ', reviewee)
+  if (!reviewee) throw new ApolloError('INVALID_REVIEWEE')
+
+  const reviewer = await readEmployee(reviewerId)
+  console.log('>>> [models.js] reviewer : ', reviewer)
+  if (!reviewer) throw new ApolloError('INVALID_REVIEWER')
 
   const count = await Reviews.countDocuments()
   const newId = generateNewId(count, 'REVIEW')
@@ -68,7 +86,7 @@ export async function create({ text, revieweeId, reviewerId }) {
  * @returns {Object}
  */
 export async function update(id, { text }) {
-  if (!id || !text) throw new UserInputError('INVALID_INPUT_REVIEW')
+  if (!id || !text || !text.trim()) throw new UserInputError('INVALID_INPUT_REVIEW')
 
   // prepare updated review data
   const updatedData = {

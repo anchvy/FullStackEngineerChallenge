@@ -33,8 +33,7 @@ export async function read(id) {
   }
 
   // if id is defined, return specific employee
-  const employee = await Employees.findOne({ id, ...DEFAULT_QUERY })
-  return employee || {}
+  return Employees.findOne({ id, ...DEFAULT_QUERY })
 }
 
 /**
