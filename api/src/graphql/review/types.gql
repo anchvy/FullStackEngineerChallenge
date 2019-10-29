@@ -2,9 +2,6 @@ type Review {
   "Review ID"
   id: String!
 
-  "Review score"
-  score: Float
-
   "Review text"
   text: String
 
@@ -25,14 +22,11 @@ type Review {
 }
 
 input InputReview {
-  "Review score"
-  score: Float
-
   "Review text"
   text: String
 
   "Employee id which is being reviewed"
-  revieweeId: String!
+  revieweeId: String
 
   "Employee id which is assigned to review"
   reviewerId: String

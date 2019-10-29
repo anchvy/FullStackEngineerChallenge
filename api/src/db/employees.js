@@ -7,7 +7,6 @@ const schema = new Mongoose.Schema({
   name: String,
   createdAt: Date,
   updatedAt: Date,
-  reviewScore: Number,
   isActive: Boolean,
 })
 

@@ -30,13 +30,12 @@ export async function read({ employeeId, reviewId }) {
 /**
  * Create review with given data
  * @param {Object} options
- * @param {number} options.score
  * @param {string} options.text
  * @param {string} options.revieweeId
  * @param {string} options.reviewerId
  * @returns {Object}
  */
-export async function create({ score, text, revieweeId, reviewerId }) {
+export async function create({ text, revieweeId, reviewerId }) {
   if (!revieweeId || !reviewerId) throw new UserInputError('INVALID_INPUT_REVIEW')
   if (revieweeId === reviewerId) throw new UserInputError('SELF_REVIEWING_NOT_ALLOWED')
 
@@ -49,7 +48,6 @@ export async function create({ score, text, revieweeId, reviewerId }) {
     id: newId,
     isActive: true,
     text: text ? encodeURIComponent(text) : '',
-    score,
     revieweeId,
     reviewerId,
     createdAt: time,
@@ -66,16 +64,14 @@ export async function create({ score, text, revieweeId, reviewerId }) {
  * Update a review with given data
  * @param {string} id
  * @param {Object} options
- * @param {number} options.score
  * @param {string} options.text
  * @returns {Object}
  */
-export async function update(id, { score, text }) {
-  if (!id || !score) throw new UserInputError('INVALID_INPUT_REVIEW')
+export async function update(id, { text }) {
+  if (!id || !text) throw new UserInputError('INVALID_INPUT_REVIEW')
 
   // prepare updated review data
   const updatedData = {
-    score,
     text,
     updatedAt: new Date().getTime(),
   }

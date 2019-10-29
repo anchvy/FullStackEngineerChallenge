@@ -16,9 +16,6 @@ type Employee {
   "Flag to define whether the employee is removed or not"
   isActive: Boolean!
 
-  "Employee review score"
-  reviewScore: Float
-
   "Array of employee's reviews"
   reviews: [Review]
 

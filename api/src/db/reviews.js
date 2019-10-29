@@ -10,7 +10,6 @@ const schemaOptions = {
 const schema = new Mongoose.Schema(
   {
     id: { type: String, required: true },
-    score: Number,
     text: String,
     reviewerId: String,
     revieweeId: String,
