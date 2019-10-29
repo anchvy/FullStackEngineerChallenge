@@ -25,7 +25,7 @@ const CollapseCard = React.memo(props => {
   return (
     <Paper>
       {mainComponent}
-      <Collapse in={isOpen} timeout="auto" unmountOnExit>
+      <Collapse in={isOpen} timeout="auto">
         <CollapseContentBox>{collapseComponent}</CollapseContentBox>
       </Collapse>
     </Paper>

@@ -22,7 +22,7 @@ const Title = styled.h2`
  * -------------------------------------------- */
 
 const ActivitiesSection = React.memo(props => {
-  const { isListLoading, reviews, onSubmitReview } = props
+  const { isListLoading, reviews } = props
 
   return (
     <Paper>
@@ -38,7 +38,6 @@ const ActivitiesSection = React.memo(props => {
                 reviewId={review.id}
                 revieweeName={review.reviewee.name}
                 reviewText={review.text}
-                onSubmitReview={onSubmitReview}
               />
             ))}
           </>
@@ -49,7 +48,6 @@ const ActivitiesSection = React.memo(props => {
 })
 
 ActivitiesSection.propTypes = {
-  onSubmitReview: PropTypes.func.isRequired,
   isListLoading: PropTypes.bool,
   reviews: PropTypes.array,
 }

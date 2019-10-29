@@ -20,31 +20,12 @@ const GET_EMPLOYEE_REVIEWS = gql`
     }
   }
 `
-const UPDATE_REVIEW = gql`
-  mutation UpdateReview($id: String!, $data: InputReview!) {
-    updateReview(id: $id, data: $data) {
-      id
-    }
-  }
-`
 
 const ActivitiesSection = () => {
-  const [mutate] = useMutation(UPDATE_REVIEW)
-  const { loading, data, refetch } = useQuery(GET_EMPLOYEE_REVIEWS)
+  const { loading, data } = useQuery(GET_EMPLOYEE_REVIEWS)
   const me = get(data, 'employee', {})
 
-  // submit-button: onclick
-  const onSubmitReview = useCallback(
-    async (id, text) => {
-      const updateResponse = await mutate({ variables: { id, data: { text } } })
-      if (get(updateResponse, 'data.updateReview.id')) {
-        refetch()
-      }
-    },
-    [mutate, refetch]
-  )
-
-  return <ActivitiesSectionComponent isListLoading={loading} reviews={me.reviews} onSubmitReview={onSubmitReview} />
+  return <ActivitiesSectionComponent isListLoading={loading} reviews={me.reviews} />
 }
 
 export default ActivitiesSection

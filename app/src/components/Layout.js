@@ -7,6 +7,7 @@ import { LAYOUT_PADDING } from '../utils/styles'
 
 // const Wrapper = styled.div``
 const Container = styled.div`
+  align-items: flex-start;
   display: flex;
   margin: auto;
   padding: ${LAYOUT_PADDING};
