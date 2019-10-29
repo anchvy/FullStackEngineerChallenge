@@ -5,9 +5,6 @@ type Auth {
   "Flag to define whether the token can be used or not"
   isActive: Boolean
 
-  "Token's owner name"
-  username: String
-
   "Notice message"
   message: String
 

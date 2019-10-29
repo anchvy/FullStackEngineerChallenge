@@ -31,10 +31,10 @@ type Employee {
 
 input InputEmployee {
   "Employee fullname"
-  name: String!
+  name: String
 
   "Employee role"
-  role: EMPLOYEE_ROLE!
+  role: EMPLOYEE_ROLE
 }
 
 # ----------------------------------------------------

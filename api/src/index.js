@@ -1,7 +1,9 @@
 import 'dotenv/config'
 import { ApolloServer, AuthenticationError } from 'apollo-server'
 import { verify } from './graphql/auth/models'
+
 import schema from './graphql/schema'
+import loader from './graphql/loader'
 
 const AUTH_OPERATIONS_NAME = ['Auth', 'VerifyToken']
 const PORT = 4000
@@ -15,15 +17,16 @@ const server = new ApolloServer({
     // prevent validate user in case of auth request
     if (!isAuthRequest) {
       const { authorization = '' } = req.headers
-      const { status, responseData } = verify(authorization.split(' ')[1])
+      const { isActive, payload } = verify(authorization.split(' ')[1])
       // validate user login
-      if (!status) throw new AuthenticationError('REQUIRED_LOGIN')
+      if (!isActive) throw new AuthenticationError('REQUIRED_LOGIN')
       // set current user to context
-      user = responseData.data.payload
+      user = payload
     }
 
     return {
       user,
+      loader,
     }
   },
 })

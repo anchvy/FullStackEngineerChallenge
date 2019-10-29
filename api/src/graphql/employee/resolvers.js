@@ -3,34 +3,16 @@ import { read as readReview } from '../review/models'
 
 const resolvers = {
   Query: {
-    employee: async (_, { id }, { user }) => {
-      const { responseData } = await read(user.id || id)
-      return responseData.data
-    },
-    employees: async () => {
-      const { responseData } = await read()
-      return responseData.data
-    },
+    employee: async (_, { id }, { user }) => read(user.id || id),
+    employees: async () => read(),
   },
   Mutation: {
-    createEmployee: async (_, { data }) => {
-      const { responseData } = await create(data)
-      return responseData.data
-    },
-    updateEmployee: async (_, { id, data }) => {
-      const { responseData } = await update(id, data)
-      return responseData.data
-    },
-    removeEmployee: async (_, { id }) => {
-      const { responseData } = await remove(id)
-      return responseData.data
-    },
+    createEmployee: async (_, { data }) => create(data),
+    updateEmployee: async (_, { id, data }) => update(id, data),
+    removeEmployee: async (_, { id }) => remove(id),
   },
   Employee: {
-    reviews: async ({ id }) => {
-      const { responseData } = await readReview({ employeeId: id })
-      return responseData.data
-    },
+    reviews: async ({ id }) => readReview({ employeeId: id }),
   },
 }
 

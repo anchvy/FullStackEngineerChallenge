@@ -35,7 +35,7 @@ input InputReview {
   revieweeId: String!
 
   "Employee id which is assigned to review"
-  reviewerIds: [String]
+  reviewerId: String
 }
 
 # ----------------------------------------------------
@@ -56,5 +56,5 @@ type Mutation {
   updateReview(id: String!, data: InputReview!): Review
 
   "Remove specific review with given id"
-  removeReview(id: String!): AcknowledgeResponse
+  removeReview(id: String!): Review
 }

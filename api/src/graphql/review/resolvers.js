@@ -2,28 +2,17 @@ import { read, create, update, remove } from './models'
 
 const resolvers = {
   Query: {
-    review: async (_, { id }) => {
-      const { responseData } = await read({ reviewId: id })
-      return responseData.data
-    },
-    reviews: async (_, { employeeId }) => {
-      const { responseData } = await read({ employeeId })
-      return responseData.data
-    },
+    review: async (_, { id }) => read({ reviewId: id }),
+    reviews: async (_, { employeeId }) => read({ employeeId }),
   },
   Mutation: {
-    createReview: async (_, { data }) => {
-      const { responseData } = await create(data)
-      return responseData.data
-    },
-    updateReview: async (_, { id, data }) => {
-      const { responseData } = await update(id, data)
-      return responseData.data
-    },
-    removeReview: async (_, { id }) => {
-      const { responseData } = await remove(id)
-      return responseData.data
-    },
+    createReview: async (_, { data }) => create(data),
+    updateReview: async (_, { id, data }) => update(id, data),
+    removeReview: async (_, { id }) => remove(id),
+  },
+  Review: {
+    reviewer: async ({ reviewerId }, _args, { loader }) => loader.readEmployees.load(reviewerId),
+    reviewee: async ({ revieweeId }, _args, { loader }) => loader.readEmployees.load(revieweeId),
   },
 }
 
