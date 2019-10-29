@@ -74,9 +74,11 @@ const InviteInfoBox = props => {
           </InviteTitle>
         </InfoContainer>
 
-        <Button variant="outlined" color={buttonColor} onClick={buttonOnClick} disabled={props.isLoading}>
-          {buttonLabel}
-        </Button>
+        {!isReviewed && (
+          <Button variant="outlined" color={buttonColor} onClick={buttonOnClick} disabled={props.isLoading}>
+            {buttonLabel}
+          </Button>
+        )}
       </InviteInfoWrapper>
       {props.error && <ErrorText>{`* ${props.error}`}</ErrorText>}
     </>
