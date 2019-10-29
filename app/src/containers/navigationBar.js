@@ -10,23 +10,6 @@ const GET_EMPLOYEE_INFO = gql`
     employee {
       id
       name
-      role
-      notifications {
-        type
-        title
-        description
-      }
-      reviewScore
-      reviews {
-        id
-        score
-        text
-        reviewer {
-          id
-          name
-        }
-        createdAt
-      }
     }
   }
 `

@@ -6,7 +6,7 @@ import { get } from 'lodash'
 import routes from '../configs/routes'
 import { getToken, setToken } from '../utils/auth'
 
-import AuthComponent from '../components/auth'
+import AuthComponent from '../components/Auth'
 
 const AUTH = gql`
   mutation Auth($id: String!) {

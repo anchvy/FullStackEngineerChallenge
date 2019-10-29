@@ -2,6 +2,7 @@
   "plugins": ["prettier", "react-hooks"],
   "extends": ["react-app", "airbnb", "plugin:prettier/recommended", "eslint:recommended"],
   "rules": {
+    "react/jsx-wrap-multilines": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "import/prefer-default-export": "off",
     "no-console": "off",

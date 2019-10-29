@@ -3,41 +3,60 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 import UIPaper from '@material-ui/core/Paper'
+import RequestedReview from '../Cards/RequestedReview'
 import { SPACING } from '../../utils/styles'
 
 const Paper = styled(UIPaper)`
   && {
     flex: 1;
-
-    margin-bottom: ${SPACING.LG};
+    padding: ${SPACING.XXL};
   }
+`
+const Title = styled.h2`
+  font-weight: bold;
+  margin-bottom ${SPACING.XL};
 `
 
 /* -------------------------------------------- *
  * REACT COMPONENT
  * -------------------------------------------- */
 
-const ActivitiesSection = props => {
-  const { name, role, isLoading } = props
+const ActivitiesSection = React.memo(props => {
+  const { isListLoading, reviews, onSubmitReview } = props
 
   return (
     <Paper>
-      {name}
-      {role}
+      <section>
+        <Title>Review Requests</Title>
+        {isListLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <>
+            {reviews.map(review => (
+              <RequestedReview
+                key={`review-${review.id}`}
+                reviewId={review.id}
+                revieweeName={review.reviewee.name}
+                reviewText={review.text}
+                onSubmitReview={onSubmitReview}
+              />
+            ))}
+          </>
+        )}
+      </section>
     </Paper>
   )
-}
+})
 
 ActivitiesSection.propTypes = {
-  isLoading: PropTypes.bool,
-  name: PropTypes.string,
-  role: PropTypes.oneOf(['ADMIN', 'STAFF']),
+  onSubmitReview: PropTypes.func.isRequired,
+  isListLoading: PropTypes.bool,
+  reviews: PropTypes.array,
 }
 
 ActivitiesSection.defaultProps = {
-  isLoading: false,
-  name: null,
-  role: 'STAFF',
+  isListLoading: false,
+  reviews: [],
 }
 
 export default ActivitiesSection

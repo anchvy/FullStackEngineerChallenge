@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 import { get } from 'lodash'
 
-import InfoSectionComponent from '../../components/me/InfoSection'
+import InfoSectionComponent from '../../components/Me/InfoSection'
 
 const GET_EMPLOYEE_INFO = gql`
   query GetEmployeeInfo {
