@@ -5,6 +5,7 @@ import Reviews from '../../db/reviews'
 import { generateNewId } from '../../utils/model'
 
 const DEFAULT_QUERY = { isActive: true }
+const DEFAULT_SORT = { createdAt: -1 }
 
 /**
  * Get review data with/without given options
@@ -17,12 +18,12 @@ const DEFAULT_QUERY = { isActive: true }
 export async function read({ revieweeId, reviewerId, reviewId }) {
   // if revieweeId is defined, return reviews of employee
   if (revieweeId) {
-    return Reviews.find({ revieweeId, ...DEFAULT_QUERY })
+    return Reviews.find({ revieweeId, ...DEFAULT_QUERY }).sort(DEFAULT_SORT)
   }
 
   // if reviewerId is defined, return assinged reviews of employee
   if (reviewerId) {
-    return Reviews.find({ reviewerId, ...DEFAULT_QUERY })
+    return Reviews.find({ reviewerId, ...DEFAULT_QUERY }).sort(DEFAULT_SORT)
   }
 
   // if reviewId is defined, return specific review
@@ -31,7 +32,7 @@ export async function read({ revieweeId, reviewerId, reviewId }) {
   }
 
   // if employeeId is not defined, return array of reviews
-  return Reviews.find(DEFAULT_QUERY)
+  return Reviews.find(DEFAULT_QUERY).sort(DEFAULT_SORT)
 }
 
 /**
@@ -46,15 +47,10 @@ export async function create({ text, revieweeId, reviewerId }) {
   if (!revieweeId || !reviewerId) throw new UserInputError('INVALID_INPUT_REVIEW')
   if (revieweeId === reviewerId) throw new UserInputError('SELF_REVIEWING_NOT_ALLOWED')
 
-  console.log('>>> [models.js] revieweeId : ', revieweeId)
-  console.log('>>> [models.js] reviewerId : ', reviewerId)
-
   const reviewee = await readEmployee(revieweeId)
-  console.log('>>> [models.js] reviewee : ', reviewee)
   if (!reviewee) throw new ApolloError('INVALID_REVIEWEE')
 
   const reviewer = await readEmployee(reviewerId)
-  console.log('>>> [models.js] reviewer : ', reviewer)
   if (!reviewer) throw new ApolloError('INVALID_REVIEWER')
 
   const count = await Reviews.countDocuments()

@@ -26,6 +26,7 @@ const InviteTitle = styled.span`
 `
 const RevieweeTitle = styled.span`
   color: ${COLORS.DARK_BLUE};
+  text-transform: uppercase;
 `
 const TextField = styled(UITextField)`
   width: 100%;
@@ -49,6 +50,8 @@ const InviteInfoBox = props => {
   let buttonColor = 'primary'
   let buttonOnClick = onToggleState
 
+  const title = isReviewed ? 'Thank you for your reviewing' : 'You have been invited to review'
+
   if (isLoading) {
     buttonLabel = <CircularProgress size={10} />
   } else if (canSubmit) {
@@ -64,7 +67,8 @@ const InviteInfoBox = props => {
       <InfoContainer>
         {!isReviewed ? <RateReviewIcon /> : <DoneIcon />}
         <InviteTitle>
-          You have been invited to review&nbsp;
+          {title}
+          &nbsp;
           <RevieweeTitle>{revieweeName}</RevieweeTitle>
         </InviteTitle>
       </InfoContainer>

@@ -27,7 +27,7 @@ const ActivitiesSection = React.memo(props => {
   return (
     <Paper>
       <section>
-        <Title>Review Requests</Title>
+        <Title>Activities</Title>
         {isListLoading ? (
           <div>Loading...</div>
         ) : (
