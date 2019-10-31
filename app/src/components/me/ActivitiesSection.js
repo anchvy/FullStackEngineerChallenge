@@ -1,59 +1,37 @@
 import React from 'react'
-import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import UIPaper from '@material-ui/core/Paper'
+import ItemListSection from '../ItemListSection'
 import RequestedReview from '../Cards/RequestedReview'
-import { SPACING } from '../../utils/styles'
-
-const Paper = styled(UIPaper)`
-  && {
-    flex: 1;
-    padding: ${SPACING.XXL};
-  }
-`
-const Title = styled.h2`
-  font-weight: bold;
-  margin-bottom ${SPACING.XL};
-`
 
 /* -------------------------------------------- *
  * REACT COMPONENT
  * -------------------------------------------- */
 
 const ActivitiesSection = React.memo(props => {
-  const { isListLoading, reviews } = props
+  const { isLoading, reviews } = props
 
   return (
-    <Paper>
-      <section>
-        <Title>Activities</Title>
-        {isListLoading ? (
-          <div>Loading...</div>
-        ) : (
-          <>
-            {reviews.map(review => (
-              <RequestedReview
-                key={`review-${review.id}`}
-                reviewId={review.id}
-                revieweeName={review.reviewee.name}
-                reviewText={review.text}
-              />
-            ))}
-          </>
-        )}
-      </section>
-    </Paper>
+    <ItemListSection isLoading={isLoading} title="Activities">
+      {reviews.map(review => (
+        <RequestedReview
+          key={`review-${review.id}`}
+          reviewId={review.id}
+          revieweeName={review.reviewee.name}
+          reviewText={review.text}
+        />
+      ))}
+    </ItemListSection>
   )
 })
 
 ActivitiesSection.propTypes = {
-  isListLoading: PropTypes.bool,
+  isLoading: PropTypes.bool,
   reviews: PropTypes.array,
 }
 
 ActivitiesSection.defaultProps = {
-  isListLoading: false,
+  isLoading: false,
   reviews: [],
 }
 

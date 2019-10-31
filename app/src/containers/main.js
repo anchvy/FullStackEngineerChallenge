@@ -6,7 +6,8 @@ import routes from '../configs/routes'
 
 const Me = lazy(() => import('./me'))
 const Auth = lazy(() => import('./auth'))
-// const About = lazy(() => import('./routes/About'))
+const Admin = lazy(() => import('./admin'))
+const Review = lazy(() => import('./review'))
 
 const Main = () => {
   return (
@@ -18,6 +19,8 @@ const Main = () => {
             render={() => (
               <Layout>
                 <Route exact path={routes.me.path} component={Me} />
+                <Route exact path={routes.admin.path} component={Admin} />
+                <Route exact path={routes.review.path} component={Review} />
               </Layout>
             )}
           />

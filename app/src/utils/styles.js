@@ -16,3 +16,15 @@ export const FLEX_CENTER = css`
   display: flex;
   justify-content: center;
 `
+
+/**
+ * media query for used in styled-component
+ */
+const MOBILE_MAX_WIDTH = 768
+export const ON_MOBILE = (...args) => {
+  return css`
+    @media (max-width: ${MOBILE_MAX_WIDTH}px) {
+      ${css(...args)}
+    }
+  `
+}

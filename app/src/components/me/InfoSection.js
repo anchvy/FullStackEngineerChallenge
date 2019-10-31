@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import UISkeleton from '@material-ui/lab/Skeleton'
 import UIPaper from '@material-ui/core/Paper'
-import { SPACING } from '../../utils/styles'
+import { SPACING, ON_MOBILE } from '../../utils/styles'
 import COLORS from '../../utils/colors'
 
 const Skeleton = styled(UISkeleton)`
@@ -23,6 +23,12 @@ const Paper = styled(UIPaper)`
     flex-direction: column;
     margin-right: ${SPACING.MD};
     padding: ${SPACING.XXL};
+
+    ${ON_MOBILE`
+      margin-right: 0;
+      margin-bottom: ${SPACING.MD};
+      padding: ${SPACING.MD};
+    `}
   }
 `
 const ImageBox = styled.div`
@@ -30,8 +36,13 @@ const ImageBox = styled.div`
 `
 const Image = styled.img`
   border-radius: 50%;
-  width: 150px;
   margin-bottom: ${SPACING.XL};
+  width: 150px;
+
+  ${ON_MOBILE`
+    margin-bottom: ${SPACING.SM};
+    width: 100px;
+  `}
 `
 const Name = styled.span`
   font-size: 24px;
@@ -53,6 +64,10 @@ const Role = styled.div`
   right: 0;
   text-transform: lowercase;
   top: 0;
+
+  ${ON_MOBILE`
+    font-size: 10px;
+  `}
 `
 
 /* -------------------------------------------- *

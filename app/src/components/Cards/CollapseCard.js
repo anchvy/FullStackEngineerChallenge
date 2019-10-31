@@ -4,11 +4,16 @@ import PropTypes from 'prop-types'
 
 import UIPaper from '@material-ui/core/Paper'
 import Collapse from '@material-ui/core/Collapse'
-import { SPACING } from '../../utils/styles'
+import { SPACING, ON_MOBILE } from '../../utils/styles'
 
 const Paper = styled(UIPaper)`
   && {
     padding: ${SPACING.MD};
+    margin-bottom: ${SPACING.SM};
+
+    ${ON_MOBILE`
+      padding: ${SPACING.SM};
+    `}
   }
 `
 const CollapseContentBox = styled.div`

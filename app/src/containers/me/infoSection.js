@@ -15,11 +15,11 @@ const GET_EMPLOYEE_INFO = gql`
   }
 `
 
-const InfoBox = () => {
+const InfoSection = () => {
   const { loading, data } = useQuery(GET_EMPLOYEE_INFO)
   const me = get(data, 'employee', {})
 
   return <InfoSectionComponent id={me.id} isLoading={loading} name={me.name} role={me.role} />
 }
 
-export default InfoBox
+export default InfoSection

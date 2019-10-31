@@ -3,40 +3,23 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 import CircularProgress from '@material-ui/core/CircularProgress'
-import UIButton from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import RateReviewIcon from '@material-ui/icons/RateReview'
 import DoneIcon from '@material-ui/icons/Done'
+import CloseIcon from '@material-ui/icons/Close'
+import CreateIcon from '@material-ui/icons/Create'
+import SendIcon from '@material-ui/icons/Send'
 import COLORS from '../../../utils/colors'
 import { SPACING } from '../../../utils/styles'
+import { Wrapper, InfoContainer, ErrorText, ActionBox } from '../styled'
 
-const InviteInfoWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-`
-const InfoContainer = styled.div`
-  display: flex;
-`
 const InviteTitle = styled.span`
   align-self: center;
   margin: 0 ${SPACING.MD};
 `
-const ErrorText = styled.span`
-  color: ${COLORS.RED};
-  display: block;
-  font-size: 10px;
-  padding-top: ${SPACING.XS};
-  text-align: right;
-`
 const RevieweeTitle = styled.span`
   color: ${COLORS.DARK_BLUE};
   text-transform: uppercase;
-`
-const Button = styled(UIButton)`
-  && {
-    min-height: 25px;
-    padding: 0;
-  }
 `
 
 /* -------------------------------------------- *
@@ -46,8 +29,7 @@ const Button = styled(UIButton)`
 const InviteInfoBox = props => {
   const isReviewed = !!props.reviewText
 
-  let buttonLabel = 'Review'
-  let buttonColor = 'primary'
+  let buttonLabel = <CreateIcon />
   let buttonOnClick = props.onToggleState
 
   const title = isReviewed ? 'Thank you for your reviewing' : 'You have been invited to review'
@@ -55,16 +37,15 @@ const InviteInfoBox = props => {
   if (props.isLoading) {
     buttonLabel = <CircularProgress size={10} />
   } else if (props.canSubmit && props.isOpen) {
-    buttonLabel = 'Send'
+    buttonLabel = <SendIcon />
     buttonOnClick = props.onSubmit
   } else if (props.isOpen) {
-    buttonLabel = 'Cancel'
-    buttonColor = 'secondary'
+    buttonLabel = <CloseIcon />
   }
 
   return (
     <>
-      <InviteInfoWrapper>
+      <Wrapper>
         <InfoContainer>
           {!isReviewed ? <RateReviewIcon /> : <DoneIcon />}
           <InviteTitle>
@@ -73,13 +54,14 @@ const InviteInfoBox = props => {
             <RevieweeTitle>{props.revieweeName}</RevieweeTitle>
           </InviteTitle>
         </InfoContainer>
-
         {!isReviewed && (
-          <Button variant="outlined" color={buttonColor} onClick={buttonOnClick} disabled={props.isLoading}>
-            {buttonLabel}
-          </Button>
+          <ActionBox mobileAligned="flex-end">
+            <IconButton onClick={buttonOnClick} disabled={props.isLoading}>
+              {buttonLabel}
+            </IconButton>
+          </ActionBox>
         )}
-      </InviteInfoWrapper>
+      </Wrapper>
       {props.error && <ErrorText>{`* ${props.error}`}</ErrorText>}
     </>
   )

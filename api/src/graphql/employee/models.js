@@ -29,7 +29,7 @@ export async function readWithDataloader(ids) {
 export async function read(id) {
   // if id is not defined, return array of employees
   if (!id) {
-    return Employees.find(DEFAULT_QUERY)
+    return Employees.find(DEFAULT_QUERY).sort({ id: -1 })
   }
 
   // if id is defined, return specific employee
@@ -76,7 +76,7 @@ export async function create({ name, role }) {
  * @returns {Object} modelResponse
  */
 export async function update(id, { name, role }) {
-  if (!id) throw new UserInputError('INVALID_INPUT_EMPLOYEE')
+  if (!id || !name || !name.trim() || !role) throw new UserInputError('INVALID_INPUT_EMPLOYEE')
 
   // prepare updated employee data
   const updatedData = {
@@ -95,10 +95,12 @@ export async function update(id, { name, role }) {
 /**
  * Remove an employee with given id
  * @param {string} id
+ * @param {string} removerId
  * @returns {Object} modelResponse
  */
-export async function remove(id) {
-  if (!id) throw new ApolloError('INVALID_EMPLOYEE_ID')
+export async function remove(id, removerId) {
+  if (!id || !removerId) throw new ApolloError('INVALID_INPUT_ID')
+  if (id === removerId) throw new ApolloError('CANNOT_REMOVE_YOURSELF')
 
   // prepare removed employee data
   const updatedData = {
