@@ -46,7 +46,7 @@ const LoginForm = React.memo(props => {
       <TextField
         inputRef={textFieldRef}
         required
-        placeholder="0000000000"
+        placeholder="000"
         variant="outlined"
         label="employee ID"
         InputProps={{
