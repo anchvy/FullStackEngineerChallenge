@@ -61,7 +61,7 @@ export async function create({ text, revieweeId, reviewerId }) {
   const newData = {
     id: newId,
     isActive: true,
-    text: text ? encodeURIComponent(text) : '',
+    text: text || '',
     revieweeId,
     reviewerId,
     createdAt: time,

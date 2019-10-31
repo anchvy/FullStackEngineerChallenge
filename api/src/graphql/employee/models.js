@@ -54,7 +54,7 @@ export async function create({ name, role }) {
   const newData = {
     id: newId,
     isActive: true,
-    name: encodeURIComponent(name),
+    name,
     role,
     createdAt: time,
     updatedAt: time,

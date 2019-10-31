@@ -19,6 +19,9 @@ type Employee {
   "Array of employee's reviews"
   reviews: [Review]
 
+  "Array of reviews which are requested employee to review"
+  reviewed: [Review]
+
   "Employee created date and time"
   createdAt: DateTime!
 

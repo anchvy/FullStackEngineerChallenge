@@ -4,5 +4,5 @@
  * @param {string} prefix
  */
 export function generateNewId(currentCount, prefix) {
-  return `${prefix.toUpperCase()}${String(currentCount + 1).padStart(10, '0')}`
+  return `${prefix.toUpperCase()}${String(currentCount + 1).padStart(3, '0')}`
 }

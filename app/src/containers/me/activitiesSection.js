@@ -9,7 +9,7 @@ const GET_EMPLOYEE_REVIEWS = gql`
   query GetEmployeeInfo {
     employee {
       id
-      reviews {
+      reviewed {
         id
         text
         reviewee {
@@ -25,7 +25,7 @@ const ActivitiesSection = () => {
   const { loading, data } = useQuery(GET_EMPLOYEE_REVIEWS)
   const me = get(data, 'employee', {})
 
-  return <ActivitiesSectionComponent isLoading={loading} reviews={me.reviews} />
+  return <ActivitiesSectionComponent isLoading={loading} reviews={me.reviewed} />
 }
 
 export default ActivitiesSection
