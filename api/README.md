@@ -21,7 +21,7 @@ Regarding to current implementation, we have some limitation for the API followi
 - Staff level is allowed to fetch an employee data only
 - The reviewer is allowed to review once per reviewee
 
-## What we have done
+## What I have done
 - User access handling
 - Database connecting
 - Error handling
@@ -29,7 +29,7 @@ Regarding to current implementation, we have some limitation for the API followi
 - Employee Query/Mutation (Create/Read/Update/Delete)
 - Review Query/Mutation (Create/Read/Update/Delete)
 
-## What we have *not* done
+## What I have *not* done
 - Pagination
 - Resource/query limiting
 - Unit testing
